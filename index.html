@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mood Journal</title>
+<title>Mood Journal Explosion</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,19 +18,9 @@
 }
 
 body{
-    --c1:#ff6b6b;
-    --c2:#feca57;
-    --c3:#48dbfb;
-    --c4:#5f27cd;
-
     height:100vh;
     overflow:hidden;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:linear-gradient(-45deg,var(--c1),var(--c2),var(--c3),var(--c4));
+    background:linear-gradient(-45deg,#ff6b6b,#feca57,#48dbfb,#5f27cd);
     background-size:400% 400%;
     animation:gradientMove 15s ease infinite;
 }
@@ -41,24 +31,10 @@ body{
     100%{background-position:0% 50%;}
 }
 
-.blur{
-    position:fixed;
-    width:500px;
-    height:500px;
-    border-radius:50%;
-    filter:blur(120px);
-    opacity:.35;
-    z-index:0;
-}
-
-.blur1{background:white; top:-150px; left:-150px;}
-.blur2{background:#00e5ff; bottom:-150px; right:-150px;}
-
 .background-overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.45);
-    backdrop-filter:blur(25px);
+    background:rgba(0,0,0,.55);
     z-index:1;
 }
 
@@ -86,9 +62,8 @@ button{
     padding:16px;
     border-radius:18px;
     color:white;
-    font-weight:600;
-    background:rgba(255,255,255,.15);
-    backdrop-filter:blur(20px);
+    font-weight:700;
+    background:rgba(255,255,255,.2);
 }
 
 #journal{
@@ -102,32 +77,30 @@ button{
     outline:none;
     resize:none;
     color:white;
-    font-size:1.6rem;
+    font-size:1.8rem;
     padding:60px;
     caret-color:white;
 }
 
-/* REAL explosion particles */
 .particle{
     position:fixed;
-    color:white;
-    font-size:1.2rem;
     pointer-events:none;
-    white-space:nowrap;
-
-    animation:explode 1.2s ease-out forwards;
+    font-size:1.7rem;
+    font-weight:900;
+    color:white;
+    text-shadow:0 0 12px rgba(255,255,255,0.9);
+    opacity:1;
+    animation:boom 2.5s ease-out forwards;
 }
 
-@keyframes explode{
+@keyframes boom{
     0%{
-        transform:translate(var(--x0), var(--y0)) scale(1);
+        transform:translate(0,0) scale(1);
         opacity:1;
-        filter:blur(0px);
     }
     100%{
-        transform:translate(var(--x1), var(--y1)) scale(0.6);
+        transform:translate(var(--x), var(--y)) scale(0.7) rotate(var(--r));
         opacity:0;
-        filter:blur(8px);
     }
 }
 </style>
@@ -135,18 +108,16 @@ button{
 
 <body>
 
-<div class="blur blur1"></div>
-<div class="blur blur2"></div>
 <div class="background-overlay"></div>
 
 <div class="container">
 
     <div id="buttons">
-        <button onclick="setMood('happy')">😊 Happy</button>
-        <button onclick="setMood('sad')">😔 Sad</button>
-        <button onclick="setMood('angry')">😡 Angry</button>
-        <button onclick="setMood('calm')">😌 Calm</button>
-        <button onclick="setMood('excited')">🤩 Excited</button>
+        <button onclick="start()">😊 Happy</button>
+        <button onclick="start()">😔 Sad</button>
+        <button onclick="start()">😡 Angry</button>
+        <button onclick="start()">😌 Calm</button>
+        <button onclick="start()">🤩 Excited</button>
     </div>
 
     <textarea id="journal"></textarea>
@@ -154,33 +125,17 @@ button{
 </div>
 
 <script>
-const root = document.body;
 const buttons = document.getElementById("buttons");
 const journal = document.getElementById("journal");
 
-function setMood(mood){
-
+function start(){
     buttons.style.display = "none";
     journal.style.display = "block";
     journal.focus();
-
-    const themes = {
-        happy:["#FFD93D","#FF6B6B","#FF9FF3","#F368E0"],
-        sad:["#0F2027","#203A43","#2C5364","#4CA1AF"],
-        angry:["#8B0000","#B22222","#FF0000","#FF416C"],
-        calm:["#43CEA2","#185A9D","#6DD5ED","#2193B0"],
-        excited:["#FF9966","#FF5E62","#FF9A9E","#FAD0C4"]
-    };
-
-    const c = themes[mood];
-    root.style.setProperty("--c1",c[0]);
-    root.style.setProperty("--c2",c[1]);
-    root.style.setProperty("--c3",c[2]);
-    root.style.setProperty("--c4",c[3]);
 }
 
-/* FIXED: correct cursor explosion position */
-journal.addEventListener("keydown", (e)=>{
+/* EXACT TEXT POSITION EXPLOSION */
+journal.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
 
@@ -191,38 +146,41 @@ journal.addEventListener("keydown", (e)=>{
 
     const rect = journal.getBoundingClientRect();
 
-    // EXACT cursor position approximation
-    const lines = journal.value.substr(0, journal.selectionStart).split("\n");
-    const lastLine = lines[lines.length - 1];
-
-    const charWidth = 14;
-    const lineHeight = 28;
-
-    const x = rect.left + 60 + (lastLine.length * charWidth);
-    const y = rect.top + 60 + ((lines.length - 1) * lineHeight);
+    const style = getComputedStyle(journal);
+    const fontSize = parseFloat(style.fontSize);
+    const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.4;
+    const paddingLeft = parseFloat(style.paddingLeft);
+    const paddingTop = parseFloat(style.paddingTop);
 
     const words = text.split(" ");
 
-    words.forEach((w)=>{
+    words.forEach((word)=>{
 
         const el = document.createElement("div");
         el.className = "particle";
-        el.textContent = w;
+        el.textContent = word;
 
-        const dx = (Math.random() * 800 - 400);
-        const dy = (Math.random() * 800 - 400);
+        /* start EXACT at text area origin + padding */
+        const startX = rect.left + paddingLeft;
+        const startY = rect.top + paddingTop;
 
-        el.style.left = x + "px";
-        el.style.top = y + "px";
+        el.style.left = startX + "px";
+        el.style.top = startY + "px";
 
-        el.style.setProperty("--x0","0px");
-        el.style.setProperty("--y0","0px");
-        el.style.setProperty("--x1",dx + "px");
-        el.style.setProperty("--y1",dy + "px");
+        /* TRUE explosion randomness */
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 300 + Math.random() * 500;
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        el.style.setProperty("--x", x + "px");
+        el.style.setProperty("--y", y + "px");
+        el.style.setProperty("--r", (Math.random()*720 - 360) + "deg");
 
         document.body.appendChild(el);
 
-        setTimeout(()=>el.remove(),1200);
+        setTimeout(()=>el.remove(),2500);
     });
 
     journal.value = "";
