@@ -67,12 +67,12 @@ button{
     background:rgba(255,255,255,.2);
 }
 
-/* TEXT BOX LOWERED MORE */
+/* TEXT BOX (slightly higher than before) */
 #journal{
     display:none;
     position:absolute;
 
-    top:68%;
+    top:66%;
     left:50%;
     transform:translate(-50%,-50%);
 
@@ -165,7 +165,7 @@ journal.addEventListener("keydown",(e)=>{
     const rect = journal.getBoundingClientRect();
 
     const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2 - 80;
+    const startY = rect.top + rect.height / 2 - 120;
 
     words.forEach((word)=>{
 
