@@ -65,60 +65,71 @@ button{
     color:white;
     font-weight:700;
     background:rgba(255,255,255,.2);
+    font-family:'Figtree',sans-serif;
 }
 
-/* TEXT BOX (slightly higher than before) */
+/* journal */
 #journal{
     display:none;
     position:absolute;
-
     top:66%;
     left:50%;
     transform:translate(-50%,-50%);
-
     width:75%;
     max-width:900px;
     height:260px;
-
     background:transparent;
     border:none;
     outline:none;
     resize:none;
-
     text-align:center;
-
     color:white;
     font-size:2.2rem;
     line-height:1.4;
-
     caret-color:white;
+    font-family:'Figtree',sans-serif;
 }
 
 /* particles */
 .particle{
     position:fixed;
     pointer-events:none;
-
     font-size:2rem;
     font-weight:900;
     color:white;
-
     text-shadow:0 0 18px rgba(255,255,255,1);
-
     opacity:1;
-
     animation:boom 5s ease-out forwards;
+    font-family:'Figtree',sans-serif;
 }
 
 @keyframes boom{
-    0%{
-        transform:translate(0,0) scale(1);
-        opacity:1;
-    }
-    100%{
-        transform:translate(var(--x), var(--y)) scale(0.6) rotate(var(--r));
-        opacity:0;
-    }
+    0%{transform:translate(0,0) scale(1); opacity:1;}
+    100%{transform:translate(var(--x), var(--y)) scale(0.6) rotate(var(--r)); opacity:0;}
+}
+
+/* TOP LEFT DATE */
+#datetime{
+    position:fixed;
+    top:10px;
+    left:10px;
+    font-size:10px;
+    font-style:italic;
+    color:rgba(255,255,255,0.4);
+    z-index:3;
+    font-family:'Figtree',sans-serif;
+}
+
+/* CREDIT BOTTOM RIGHT */
+#credit{
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    font-size:10px;
+    font-style:italic;
+    color:rgba(255,255,255,0.35);
+    z-index:3;
+    font-family:'Figtree',sans-serif;
 }
 </style>
 </head>
@@ -141,6 +152,9 @@ button{
 
 </div>
 
+<div id="datetime"></div>
+<div id="credit">made by bshichi</div>
+
 <script>
 const buttons = document.getElementById("buttons");
 const journal = document.getElementById("journal");
@@ -151,6 +165,17 @@ function start(){
     journal.focus();
 }
 
+/* live clock */
+function updateTime(){
+    const now = new Date();
+    document.getElementById("datetime").innerText =
+        now.toLocaleDateString() + " • " +
+        now.toLocaleTimeString();
+}
+setInterval(updateTime,1000);
+updateTime();
+
+/* explosion */
 journal.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
@@ -163,7 +188,6 @@ journal.addEventListener("keydown",(e)=>{
     const words = text.split(" ");
 
     const rect = journal.getBoundingClientRect();
-
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2 - 120;
 
@@ -179,11 +203,8 @@ journal.addEventListener("keydown",(e)=>{
         const angle = Math.random() * Math.PI * 2;
         const distance = 900 + Math.random() * 700;
 
-        const x = Math.cos(angle) * distance;
-        const y = Math.sin(angle) * distance;
-
-        el.style.setProperty("--x", x + "px");
-        el.style.setProperty("--y", y + "px");
+        el.style.setProperty("--x", Math.cos(angle) * distance + "px");
+        el.style.setProperty("--y", Math.sin(angle) * distance + "px");
         el.style.setProperty("--r", (Math.random()*720 - 360) + "deg");
 
         document.body.appendChild(el);
