@@ -87,6 +87,7 @@ button{
     caret-color:white;
 }
 
+/* AI */
 #aiBox{
     position:absolute;
     top:72%;
@@ -95,12 +96,13 @@ button{
     width:70%;
     max-width:800px;
 
-    color:rgba(255,255,255,0.75);
+    color:rgba(255,255,255,0.85);
     font-size:1rem;
     text-align:center;
     font-style:italic;
 }
 
+/* particles */
 .particle{
     position:fixed;
     pointer-events:none;
@@ -116,13 +118,26 @@ button{
     100%{transform:translate(var(--x), var(--y)) scale(0.6) rotate(var(--r)); opacity:0;}
 }
 
+/* TIME - made LESS dark */
+#datetime{
+    position:fixed;
+    top:10px;
+    left:10px;
+    font-size:11px;
+    font-style:italic;
+    color:rgba(255,255,255,0.75);
+    z-index:3;
+}
+
+/* CREDIT - made LESS dark */
 #credit{
     position:fixed;
     bottom:10px;
     right:10px;
-    font-size:10px;
+    font-size:11px;
     font-style:italic;
-    color:rgba(255,255,255,0.35);
+    color:rgba(255,255,255,0.70);
+    z-index:3;
 }
 </style>
 </head>
@@ -146,6 +161,7 @@ button{
 
 </div>
 
+<div id="datetime"></div>
 <div id="credit">made by bshichi</div>
 
 <script>
@@ -163,7 +179,6 @@ function pick(arr){
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/* LISTENING AI */
 function getAIResponse(text){
     text = text.toLowerCase();
 
@@ -173,8 +188,7 @@ function getAIResponse(text){
             "you don’t have to carry that alone.",
             "it’s alright. i’m still here.",
             "i understand. take your time.",
-            "you’re not a burden for saying that.",
-            "i hear you… really."
+            "you’re not a burden for saying that."
         ]);
     }
 
@@ -183,7 +197,6 @@ function getAIResponse(text){
             "i hear you.",
             "you don’t need to thank me… i’m here.",
             "i’m just glad you said it.",
-            "i hear you, really.",
             "that means more than you think.",
             "i’m listening."
         ]);
@@ -193,7 +206,6 @@ function getAIResponse(text){
         return pick([
             "i hear that… it stays heavy.",
             "missing someone like that is hard.",
-            "i understand.",
             "i’m here with you in that feeling.",
             "that kind of feeling lingers."
         ]);
@@ -204,8 +216,7 @@ function getAIResponse(text){
             "i hear you.",
             "that means something real.",
             "i’m listening…",
-            "that’s something important.",
-            "i feel the weight of that."
+            "that’s something important."
         ]);
     }
 
@@ -214,8 +225,7 @@ function getAIResponse(text){
             "i hear you… that sounds heavy.",
             "you don’t need to hide it here.",
             "it’s okay to feel that.",
-            "i’m here.",
-            "you’re not alone in that."
+            "i’m here with you."
         ]);
     }
 
@@ -224,22 +234,19 @@ function getAIResponse(text){
             "i hear the frustration.",
             "that’s a lot to hold.",
             "you’re allowed to feel that.",
-            "breathe… i hear you.",
-            "that sounds intense."
+            "breathe… i hear you."
         ]);
     }
 
     return pick([
         "i hear you.",
         "i’m listening.",
-        "go on…",
         "tell me more.",
         "i understand.",
         "i’m here."
     ]);
 }
 
-/* EXPLOSION + AI */
 journal.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
@@ -279,6 +286,16 @@ journal.addEventListener("keydown",(e)=>{
 
     journal.value = "";
 });
+
+/* CLOCK */
+function updateTime(){
+    const now = new Date();
+    document.getElementById("datetime").innerText =
+        now.toLocaleDateString() + " • " +
+        now.toLocaleTimeString();
+}
+setInterval(updateTime,1000);
+updateTime();
 </script>
 
 </body>
