@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mood Journal</title>
+<title>Mood Journal AI</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +45,6 @@ body{
     height:100vh;
 }
 
-/* buttons */
 #buttons{
     position:absolute;
     top:50%;
@@ -65,32 +64,43 @@ button{
     color:white;
     font-weight:700;
     background:rgba(255,255,255,.2);
-    font-family:'Figtree',sans-serif;
 }
 
-/* journal */
 #journal{
     display:none;
     position:absolute;
-    top:66%;
+    top:60%;
     left:50%;
     transform:translate(-50%,-50%);
     width:75%;
     max-width:900px;
-    height:260px;
+    height:200px;
+
     background:transparent;
     border:none;
     outline:none;
     resize:none;
+
     text-align:center;
     color:white;
-    font-size:2.2rem;
-    line-height:1.4;
+    font-size:2rem;
     caret-color:white;
-    font-family:'Figtree',sans-serif;
 }
 
-/* particles */
+#aiBox{
+    position:absolute;
+    top:72%;
+    left:50%;
+    transform:translateX(-50%);
+    width:70%;
+    max-width:800px;
+
+    color:rgba(255,255,255,0.75);
+    font-size:1rem;
+    text-align:center;
+    font-style:italic;
+}
+
 .particle{
     position:fixed;
     pointer-events:none;
@@ -98,9 +108,7 @@ button{
     font-weight:900;
     color:white;
     text-shadow:0 0 18px rgba(255,255,255,1);
-    opacity:1;
     animation:boom 5s ease-out forwards;
-    font-family:'Figtree',sans-serif;
 }
 
 @keyframes boom{
@@ -108,19 +116,6 @@ button{
     100%{transform:translate(var(--x), var(--y)) scale(0.6) rotate(var(--r)); opacity:0;}
 }
 
-/* TOP LEFT DATE */
-#datetime{
-    position:fixed;
-    top:10px;
-    left:10px;
-    font-size:10px;
-    font-style:italic;
-    color:rgba(255,255,255,0.4);
-    z-index:3;
-    font-family:'Figtree',sans-serif;
-}
-
-/* CREDIT BOTTOM RIGHT */
 #credit{
     position:fixed;
     bottom:10px;
@@ -128,8 +123,6 @@ button{
     font-size:10px;
     font-style:italic;
     color:rgba(255,255,255,0.35);
-    z-index:3;
-    font-family:'Figtree',sans-serif;
 }
 </style>
 </head>
@@ -149,15 +142,16 @@ button{
     </div>
 
     <textarea id="journal"></textarea>
+    <div id="aiBox"></div>
 
 </div>
 
-<div id="datetime"></div>
 <div id="credit">made by bshichi</div>
 
 <script>
 const buttons = document.getElementById("buttons");
 const journal = document.getElementById("journal");
+const aiBox = document.getElementById("aiBox");
 
 function start(){
     buttons.style.display = "none";
@@ -165,17 +159,87 @@ function start(){
     journal.focus();
 }
 
-/* live clock */
-function updateTime(){
-    const now = new Date();
-    document.getElementById("datetime").innerText =
-        now.toLocaleDateString() + " • " +
-        now.toLocaleTimeString();
+function pick(arr){
+    return arr[Math.floor(Math.random() * arr.length)];
 }
-setInterval(updateTime,1000);
-updateTime();
 
-/* explosion */
+/* LISTENING AI */
+function getAIResponse(text){
+    text = text.toLowerCase();
+
+    if(text.includes("i'm sorry") || text.includes("im sorry")){
+        return pick([
+            "i hear you… it's okay.",
+            "you don’t have to carry that alone.",
+            "it’s alright. i’m still here.",
+            "i understand. take your time.",
+            "you’re not a burden for saying that.",
+            "i hear you… really."
+        ]);
+    }
+
+    if(text.includes("thank you")){
+        return pick([
+            "i hear you.",
+            "you don’t need to thank me… i’m here.",
+            "i’m just glad you said it.",
+            "i hear you, really.",
+            "that means more than you think.",
+            "i’m listening."
+        ]);
+    }
+
+    if(text.includes("i miss you")){
+        return pick([
+            "i hear that… it stays heavy.",
+            "missing someone like that is hard.",
+            "i understand.",
+            "i’m here with you in that feeling.",
+            "that kind of feeling lingers."
+        ]);
+    }
+
+    if(text.includes("i love you")){
+        return pick([
+            "i hear you.",
+            "that means something real.",
+            "i’m listening…",
+            "that’s something important.",
+            "i feel the weight of that."
+        ]);
+    }
+
+    if(text.includes("im sad") || text.includes("i'm sad")){
+        return pick([
+            "i hear you… that sounds heavy.",
+            "you don’t need to hide it here.",
+            "it’s okay to feel that.",
+            "i’m here.",
+            "you’re not alone in that."
+        ]);
+    }
+
+    if(text.includes("angry")){
+        return pick([
+            "i hear the frustration.",
+            "that’s a lot to hold.",
+            "you’re allowed to feel that.",
+            "breathe… i hear you.",
+            "that sounds intense."
+        ]);
+    }
+
+    return pick([
+        "i hear you.",
+        "i’m listening.",
+        "go on…",
+        "tell me more.",
+        "i understand.",
+        "i’m here."
+    ]);
+}
+
+/* EXPLOSION + AI */
 journal.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
@@ -185,9 +249,11 @@ journal.addEventListener("keydown",(e)=>{
     const text = journal.value.trim();
     if(!text) return;
 
-    const words = text.split(" ");
+    aiBox.innerText = getAIResponse(text);
 
+    const words = text.split(" ");
     const rect = journal.getBoundingClientRect();
+
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2 - 120;
 
@@ -208,7 +274,6 @@ journal.addEventListener("keydown",(e)=>{
         el.style.setProperty("--r", (Math.random()*720 - 360) + "deg");
 
         document.body.appendChild(el);
-
         setTimeout(()=>el.remove(),5000);
     });
 
