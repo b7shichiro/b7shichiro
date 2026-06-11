@@ -182,7 +182,7 @@ function pick(arr){
 function getAIResponse(text){
     text = text.toLowerCase();
 
-    if(text.includes("i'm sorry") || text.includes("im sorry")){
+    if(text.includes("sorry") || text.includes("im sorry")){
         return pick([
             "i hear you… it's okay.",
             "you don’t have to carry that alone.",
@@ -202,7 +202,7 @@ function getAIResponse(text){
         ]);
     }
 
-    if(text.includes("i miss you")){
+    if(text.includes("miss")){
         return pick([
             "i hear that… it stays heavy.",
             "missing someone like that is hard.",
@@ -211,7 +211,7 @@ function getAIResponse(text){
         ]);
     }
 
-    if(text.includes("i love you")){
+    if(text.includes("love")){
         return pick([
             "i hear you.",
             "that means something real.",
@@ -220,7 +220,7 @@ function getAIResponse(text){
         ]);
     }
 
-    if(text.includes("im sad") || text.includes("i'm sad")){
+    if(text.includes("sad") || text.includes("i'm sad")){
         return pick([
             "i hear you… that sounds heavy.",
             "you don’t need to hide it here.",
