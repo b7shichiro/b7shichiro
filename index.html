@@ -67,18 +67,18 @@ button{
     background:rgba(255,255,255,.2);
 }
 
-/* journal */
+/* TEXT BOX LOWERED MORE */
 #journal{
     display:none;
-
     position:absolute;
-    top:50%;
+
+    top:68%;
     left:50%;
     transform:translate(-50%,-50%);
 
-    width:60%;
-    max-width:800px;
-    height:180px;
+    width:75%;
+    max-width:900px;
+    height:260px;
 
     background:transparent;
     border:none;
@@ -89,11 +89,12 @@ button{
 
     color:white;
     font-size:2.2rem;
+    line-height:1.4;
 
     caret-color:white;
 }
 
-/* explosion */
+/* particles */
 .particle{
     position:fixed;
     pointer-events:none;
@@ -101,11 +102,12 @@ button{
     font-size:2rem;
     font-weight:900;
     color:white;
-    text-shadow:0 0 15px rgba(255,255,255,1);
+
+    text-shadow:0 0 18px rgba(255,255,255,1);
 
     opacity:1;
 
-    animation:boom 2.8s ease-out forwards;
+    animation:boom 5s ease-out forwards;
 }
 
 @keyframes boom{
@@ -149,7 +151,6 @@ function start(){
     journal.focus();
 }
 
-/* VERY CENTER EXPLOSION */
 journal.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
@@ -159,12 +160,12 @@ journal.addEventListener("keydown",(e)=>{
     const text = journal.value.trim();
     if(!text) return;
 
+    const words = text.split(" ");
+
     const rect = journal.getBoundingClientRect();
 
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const words = text.split(" ");
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2 - 80;
 
     words.forEach((word)=>{
 
@@ -172,11 +173,11 @@ journal.addEventListener("keydown",(e)=>{
         el.className = "particle";
         el.textContent = word;
 
-        el.style.left = centerX + "px";
-        el.style.top = centerY + "px";
+        el.style.left = startX + "px";
+        el.style.top = startY + "px";
 
         const angle = Math.random() * Math.PI * 2;
-        const distance = 800 + Math.random() * 500;
+        const distance = 900 + Math.random() * 700;
 
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
@@ -187,7 +188,7 @@ journal.addEventListener("keydown",(e)=>{
 
         document.body.appendChild(el);
 
-        setTimeout(()=>el.remove(),2800);
+        setTimeout(()=>el.remove(),5000);
     });
 
     journal.value = "";
