@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mood Vibes</title>
+<title>Mood Journal</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,25 +23,16 @@ body{
     --c3:#48dbfb;
     --c4:#5f27cd;
 
-    min-height:100vh;
+    height:100vh;
     overflow:hidden;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    background:
-    linear-gradient(
-        -45deg,
-        var(--c1),
-        var(--c2),
-        var(--c3),
-        var(--c4)
-    );
-
+    background:linear-gradient(-45deg,var(--c1),var(--c2),var(--c3),var(--c4));
     background-size:400% 400%;
     animation:gradientMove 15s ease infinite;
-    transition:all .5s ease;
 }
 
 @keyframes gradientMove{
@@ -58,174 +49,99 @@ body{
     filter:blur(120px);
     opacity:.35;
     z-index:0;
-    animation:float 10s ease-in-out infinite;
 }
 
-.blur1{
-    background:white;
-    top:-150px;
-    left:-150px;
-}
-
-.blur2{
-    background:#00e5ff;
-    bottom:-150px;
-    right:-150px;
-}
-
-@keyframes float{
-    50%{
-        transform:translate(60px,-40px);
-    }
-}
+.blur1{background:white; top:-150px; left:-150px;}
+.blur2{background:#00e5ff; bottom:-150px; right:-150px;}
 
 .background-overlay{
     position:fixed;
     inset:0;
-
-    background:
-    linear-gradient(
-        rgba(0,0,0,.35),
-        rgba(0,0,0,.55)
-    );
-
-    backdrop-filter:
-    blur(30px)
-    saturate(140%);
-
-    -webkit-backdrop-filter:
-    blur(30px)
-    saturate(140%);
-
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(25px);
     z-index:1;
 }
 
 .container{
     position:relative;
     z-index:2;
-
-    width:min(90%,500px);
-
-    padding:35px;
-
-    border-radius:30px;
-
-    background:
-    linear-gradient(
-        135deg,
-        rgba(255,255,255,.12),
-        rgba(255,255,255,.04)
-    );
-
-    backdrop-filter:
-    blur(25px);
-
-    -webkit-backdrop-filter:
-    blur(25px);
-
-    border:1px solid rgba(255,255,255,.12);
-
-    box-shadow:
-    0 10px 40px rgba(0,0,0,.25);
-
-    text-align:center;
-
-    color:white;
+    width:100%;
+    height:100vh;
 }
 
-h1{
-    font-size:2.5rem;
-    margin-bottom:10px;
-}
-
-.subtitle{
-    opacity:.8;
-    margin-bottom:25px;
-}
-
-.buttons{
+#buttons{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
     display:flex;
     flex-direction:column;
     gap:12px;
-    width:100%;
+    width:260px;
 }
 
 button{
-    width:100%;
+    border:none;
+    cursor:pointer;
+    padding:16px;
+    border-radius:18px;
+    color:white;
+    font-weight:600;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(20px);
+}
 
+#journal{
+    display:none;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:transparent;
     border:none;
     outline:none;
-    cursor:pointer;
-
-    padding:15px;
-
-    border-radius:18px;
-
+    resize:none;
     color:white;
-    font-size:1rem;
-    font-weight:600;
-
-    background:
-    linear-gradient(
-        135deg,
-        rgba(255,255,255,.18),
-        rgba(255,255,255,.05)
-    );
-
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    transition:.3s ease;
+    font-size:1.6rem;
+    padding:60px;
+    caret-color:white;
 }
 
-button:hover{
-    transform:translateY(-3px) scale(1.02);
-
-    background:
-    linear-gradient(
-        135deg,
-        rgba(255,255,255,.25),
-        rgba(255,255,255,.08)
-    );
-}
-
-#moodText{
-    margin-top:25px;
+/* REAL explosion particles */
+.particle{
+    position:fixed;
+    color:white;
     font-size:1.2rem;
-    font-weight:600;
-    min-height:60px;
+    pointer-events:none;
+    white-space:nowrap;
+
+    animation:explode 1.2s ease-out forwards;
 }
 
-@media(max-width:600px){
-
-    .container{
-        width:92%;
-        padding:25px;
+@keyframes explode{
+    0%{
+        transform:translate(var(--x0), var(--y0)) scale(1);
+        opacity:1;
+        filter:blur(0px);
     }
-
-    h1{
-        font-size:2rem;
+    100%{
+        transform:translate(var(--x1), var(--y1)) scale(0.6);
+        opacity:0;
+        filter:blur(8px);
     }
 }
 </style>
 </head>
+
 <body>
 
 <div class="blur blur1"></div>
 <div class="blur blur2"></div>
-
 <div class="background-overlay"></div>
 
 <div class="container">
-    <h1>✨ Mood Vibes</h1>
 
-    <p class="subtitle">
-        How are you feeling today?
-    </p>
-
-    <div class="buttons">
+    <div id="buttons">
         <button onclick="setMood('happy')">😊 Happy</button>
         <button onclick="setMood('sad')">😔 Sad</button>
         <button onclick="setMood('angry')">😡 Angry</button>
@@ -233,71 +149,85 @@ button:hover{
         <button onclick="setMood('excited')">🤩 Excited</button>
     </div>
 
-    <div id="moodText">
-        Select a mood above ✨
-    </div>
+    <textarea id="journal"></textarea>
+
 </div>
 
 <script>
-const moodText = document.getElementById("moodText");
+const root = document.body;
+const buttons = document.getElementById("buttons");
+const journal = document.getElementById("journal");
 
 function setMood(mood){
 
-    switch(mood){
+    buttons.style.display = "none";
+    journal.style.display = "block";
+    journal.focus();
 
-        case "happy":
-            document.body.style.setProperty("--c1","#FFD93D");
-            document.body.style.setProperty("--c2","#FF6B6B");
-            document.body.style.setProperty("--c3","#FF9FF3");
-            document.body.style.setProperty("--c4","#F368E0");
+    const themes = {
+        happy:["#FFD93D","#FF6B6B","#FF9FF3","#F368E0"],
+        sad:["#0F2027","#203A43","#2C5364","#4CA1AF"],
+        angry:["#8B0000","#B22222","#FF0000","#FF416C"],
+        calm:["#43CEA2","#185A9D","#6DD5ED","#2193B0"],
+        excited:["#FF9966","#FF5E62","#FF9A9E","#FAD0C4"]
+    };
 
-            moodText.innerHTML =
-            "☀️ You're radiating positive energy today!";
-            break;
-
-        case "sad":
-            document.body.style.setProperty("--c1","#0F2027");
-            document.body.style.setProperty("--c2","#203A43");
-            document.body.style.setProperty("--c3","#2C5364");
-            document.body.style.setProperty("--c4","#4CA1AF");
-
-            moodText.innerHTML =
-            "🌧️ It's okay to slow down. Better days are coming.";
-            break;
-
-        case "angry":
-            document.body.style.setProperty("--c1","#8B0000");
-            document.body.style.setProperty("--c2","#B22222");
-            document.body.style.setProperty("--c3","#FF0000");
-            document.body.style.setProperty("--c4","#FF416C");
-
-            moodText.innerHTML =
-            "🔥 Take a breath. You are stronger than your anger.";
-            break;
-
-        case "calm":
-            document.body.style.setProperty("--c1","#43CEA2");
-            document.body.style.setProperty("--c2","#185A9D");
-            document.body.style.setProperty("--c3","#6DD5ED");
-            document.body.style.setProperty("--c4","#2193B0");
-
-            moodText.innerHTML =
-            "🌿 Peace looks good on you.";
-            break;
-
-        case "excited":
-            document.body.style.setProperty("--c1","#FF9966");
-            document.body.style.setProperty("--c2","#FF5E62");
-            document.body.style.setProperty("--c3","#FF9A9E");
-            document.body.style.setProperty("--c4","#FAD0C4");
-
-            moodText.innerHTML =
-            "🚀 Something exciting is waiting ahead!";
-            break;
-    }
+    const c = themes[mood];
+    root.style.setProperty("--c1",c[0]);
+    root.style.setProperty("--c2",c[1]);
+    root.style.setProperty("--c3",c[2]);
+    root.style.setProperty("--c4",c[3]);
 }
+
+/* FIXED: correct cursor explosion position */
+journal.addEventListener("keydown", (e)=>{
+
+    if(e.key !== "Enter") return;
+
+    e.preventDefault();
+
+    const text = journal.value.trim();
+    if(!text) return;
+
+    const rect = journal.getBoundingClientRect();
+
+    // EXACT cursor position approximation
+    const lines = journal.value.substr(0, journal.selectionStart).split("\n");
+    const lastLine = lines[lines.length - 1];
+
+    const charWidth = 14;
+    const lineHeight = 28;
+
+    const x = rect.left + 60 + (lastLine.length * charWidth);
+    const y = rect.top + 60 + ((lines.length - 1) * lineHeight);
+
+    const words = text.split(" ");
+
+    words.forEach((w)=>{
+
+        const el = document.createElement("div");
+        el.className = "particle";
+        el.textContent = w;
+
+        const dx = (Math.random() * 800 - 400);
+        const dy = (Math.random() * 800 - 400);
+
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+
+        el.style.setProperty("--x0","0px");
+        el.style.setProperty("--y0","0px");
+        el.style.setProperty("--x1",dx + "px");
+        el.style.setProperty("--y1",dy + "px");
+
+        document.body.appendChild(el);
+
+        setTimeout(()=>el.remove(),1200);
+    });
+
+    journal.value = "";
+});
 </script>
 
 </body>
 </html>
-
